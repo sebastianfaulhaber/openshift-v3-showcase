@@ -4,8 +4,9 @@
     "metadata": {
         "annotations": {
             "description": "Application template for IBM WebSphere Application Server for Developers Liberty Profile. See https://hub.docker.com/_/websphere-liberty/ for more information.",
-            "tags": "instant-app,websphere-liberty",
-            "iconClass" : "icon-tomcat"
+            "tags": "instant-app,3rd-party,javaee,java",
+            "iconClass" : "icon-tomcat",
+            "version": "1.0.0"
         },
         "name": "websphere-liberty-example"
     },
@@ -16,7 +17,8 @@
         {
             "description": "The name for the application.",
             "name": "APPLICATION_NAME",
-            "value": "liberty-app"
+            "value": "liberty-app",
+            "required": true
         },
         {
             "description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: <application-name>.<project>.<default-domain-suffix>",
@@ -25,13 +27,26 @@
         },
         {
             "description": "URL to the source code repository hosting your WebSphere Liberty application (e.g. https://github.com/sebastianfaulhaber/openshift-v3-showcase.git)",
-            "name": "GIT_REPO",
-            "value": "https://github.com/sebastianfaulhaber/openshift-v3-showcase.git"
+            "name": "SOURCE_REPOSITORY_URL",
+            "value": "https://github.com/sebastianfaulhaber/openshift-v3-showcase.git",
+            "required": true
+        },
+        {
+            "description": "Git branch/tag reference.",
+            "name": "SOURCE_REPOSITORY_REF",
+            "value": "master",
+            "required": true
+        },
+        {
+            "description": "Path within Git project to build; empty for root project directory.",
+            "name": "CONTEXT_DIR",
+            "value": "websphere-liberty"
         },
         {
             "description": "It is necessary to accept the terms of the WebSphere Application Server for Developers and IBM JRE licenses. This is achieved by specifying the environment variable LICENSE equal to accept when running an image. You can also view the license terms by setting this variable to view. Failure to set the variable will result in the termination of the container with a usage statement.",
             "name": "LICENSE",
-            "value": "accept"
+            "value": "accept",
+            "required": true
         }
     ],
     "objects": [
@@ -42,26 +57,32 @@
   			  "name": "${APPLICATION_NAME}"
   			},
   		  "spec": {
-  			"source": {
-  			  "type": "Git",
-  			  "git": {
-  				"uri": "${GIT_REPO}"
-        },
-        "contextDir": "websphere-liberty"
-  			},
-  			"strategy": {
-  			  "type": "Docker",
-  			  "dockerStrategy": {
-  				"nocache": true
-  			  }
-  			},
-  			"output": {
-  			  "to": {
-  				"kind": "ImageStreamTag",
-  				"name": "${APPLICATION_NAME}:latest"
-  			  }
-  			}
-  		  }
+    			"source": {
+    			  "type": "Git",
+    			  "git": {
+    				"uri": "${SOURCE_REPOSITORY_URL}",
+            "ref": "${SOURCE_REPOSITORY_REF}"
+          },
+          "contextDir": "${CONTEXT_DIR}"
+    			},
+    			"strategy": {
+    			  "type": "Docker",
+    			  "dockerStrategy": {
+    				"nocache": true
+    			  }
+    			},
+    			"output": {
+    			  "to": {
+    				"kind": "ImageStreamTag",
+    				"name": "${APPLICATION_NAME}:latest"
+    			  }
+    			},
+          "triggers": [
+            {
+              "type": "ConfigChange"
+            }
+          ]
+    		  }
   		},
         {
             "kind": "Service",
@@ -149,8 +170,8 @@
                           "${APPLICATION_NAME}"
                         ],
                         "from": {
-                        "kind": "ImageStreamTag",
-                        "name": "${APPLICATION_NAME}:latest"
+                          "kind": "ImageStreamTag",
+                          "name": "${APPLICATION_NAME}:latest"
                         }
                       }
                   }
@@ -171,7 +192,7 @@
                         "containers": [
                             {
                                 "name": "${APPLICATION_NAME}",
-                                "image": "library/websphere-liberty",
+                                "image": "${APPLICATION_NAME}",
                                 "ports": [
                                     {
                                         "containerPort": 9080,
