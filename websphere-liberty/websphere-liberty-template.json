@@ -1,0 +1,192 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "annotations": {
+            "description": "Application template for IBM WebSphere Application Server for Developers Liberty Profile. See https://hub.docker.com/_/websphere-liberty/ for more information.",
+            "tags": "instant-app,websphere-liberty",
+            "iconClass" : "icon-tomcat"
+        },
+        "name": "websphere-liberty-example"
+    },
+    "labels": {
+        "template": "websphere-liberty"
+    },
+    "parameters": [
+        {
+            "description": "The name for the application.",
+            "name": "APPLICATION_NAME",
+            "value": "liberty-app"
+        },
+        {
+            "description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: <application-name>.<project>.<default-domain-suffix>",
+            "name": "APPLICATION_HOSTNAME",
+            "value": ""
+        },
+        {
+            "description": "It is necessary to accept the terms of the WebSphere Application Server for Developers and IBM JRE licenses. This is achieved by specifying the environment variable LICENSE equal to accept when running an image. You can also view the license terms by setting this variable to view. Failure to set the variable will result in the termination of the container with a usage statement.",
+            "name": "LICENSE",
+            "value": "accept"
+        }
+    ],
+    "objects": [
+      {
+  			"kind": "BuildConfig",
+  			"apiVersion": "v1",
+  			"metadata": {
+  			  "name": "${APPLICATION_NAME}"
+  			},
+  		  "spec": {
+  			"source": {
+  			  "type": "Git",
+  			  "git": {
+  				"uri": "http.git"
+  			  }
+  			},
+  			"strategy": {
+  			  "type": "Docker",
+  			  "dockerStrategy": {
+  				"nocache": true
+  			  }
+  			},
+  			"output": {
+  			  "to": {
+  				"kind": "ImageStreamTag",
+  				"name": "${APPLICATION_NAME}:latest"
+  			  }
+  			}
+  		  }
+  		},
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "spec": {
+              "ports": [
+                  {
+                      "name": "9080-tcp",
+                      "protocol": "TCP",
+                      "port": 9080,
+                      "targetPort": 9080,
+                      "nodePort": 0
+                  },
+                  {
+                      "name": "9443-tcp",
+                      "protocol": "TCP",
+                      "port": 9443,
+                      "targetPort": 9443,
+                      "nodePort": 0
+                  }
+              ],
+              "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                }
+            },
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The web server's http port."
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-http-route",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-http-route",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for application's http service."
+                }
+            },
+            "spec": {
+                "host": "${APPLICATION_HOSTNAME}",
+                "to": {
+                    "name": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                  {
+                      "type": "ImageChange",
+                      "imageChangeParams": {
+                        "automatic": true,
+                        "containerNames": [
+                          "${APPLICATION_NAME}"
+                        ],
+                        "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "${APPLICATION_NAME}:latest"
+                        }
+                      }
+                  }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "library/websphere-liberty",
+                                "ports": [
+                                    {
+                                        "containerPort": 9080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 9443,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "LICENSE",
+                                        "value": "${LICENSE}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
