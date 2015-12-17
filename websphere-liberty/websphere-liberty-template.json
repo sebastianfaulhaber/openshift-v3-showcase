@@ -5,7 +5,6 @@
         "annotations": {
             "description": "Application template for IBM WebSphere Application Server for Developers Liberty Profile. See https://hub.docker.com/_/websphere-liberty/ for more information.",
             "tags": "instant-app,3rd-party,javaee,java",
-            "iconClass" : "icon-tomcat",
             "version": "1.0.0"
         },
         "name": "websphere-liberty-example"
@@ -60,8 +59,8 @@
     			"source": {
     			  "type": "Git",
     			  "git": {
-    				"uri": "${SOURCE_REPOSITORY_URL}",
-            "ref": "${SOURCE_REPOSITORY_REF}"
+      				"uri": "${SOURCE_REPOSITORY_URL}",
+              "ref": "${SOURCE_REPOSITORY_REF}"
           },
           "contextDir": "${CONTEXT_DIR}"
     			},
