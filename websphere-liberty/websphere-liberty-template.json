@@ -24,6 +24,11 @@
             "value": ""
         },
         {
+            "description": "URL to the source code repository hosting your WebSphere Liberty application (e.g. https://github.com/sebastianfaulhaber/openshift-v3-showcase.git)",
+            "name": "GIT_REPO",
+            "value": "https://github.com/sebastianfaulhaber/openshift-v3-showcase.git"
+        },
+        {
             "description": "It is necessary to accept the terms of the WebSphere Application Server for Developers and IBM JRE licenses. This is achieved by specifying the environment variable LICENSE equal to accept when running an image. You can also view the license terms by setting this variable to view. Failure to set the variable will result in the termination of the container with a usage statement.",
             "name": "LICENSE",
             "value": "accept"
@@ -40,8 +45,9 @@
   			"source": {
   			  "type": "Git",
   			  "git": {
-  				"uri": "http.git"
-  			  }
+  				"uri": "${GIT_REPO}"
+        },
+        "contextDir": "websphere-liberty"
   			},
   			"strategy": {
   			  "type": "Docker",
