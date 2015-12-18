@@ -69,10 +69,6 @@ wget https://raw.githubusercontent.com/sebastianfaulhaber/openshift-v3-showcase/
 oc create -f websphere-liberty-template.json -n openshift
 ```
 
-4. Enable build & deployment automation [OPTIONAL]
----------------------------------------
-TBD - Show how to automate the build&deploy lifecycle via webhooks
-
 C. User guide
 ========================
 
@@ -87,6 +83,32 @@ This project provides a simple Java EE web application that can be used to verif
 3. Specify the URL to the forked project as `SOURCE_REPOSITORY_URL` when creating a new application.
 4. Done.
 
+
+3. How can I automate the build & deployment lifecycle
+------------------------------------------------------
+The project template comes with preconfigured OpenShift webhook triggers for Github and a generic system (see https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers for more details).
+
+![20. Configure webhook triggers](./doc/20_webhook_trigger.png)
+
+In order to automate the build and deployment lifecycle you simply need to integrate the webhook URLs according to your SCM specific instructions:
+
+* Github: https://developer.github.com/webhooks/
+* Gitlab: http://doc.gitlab.com/ce/web_hooks/web_hooks.html
+
+
+4. How can I view the logs of my application?
+---------------------------------------------
+The logs can be accessed via the OpenShift Enterprise console:
+`Browse > Pods > YOUR_LIBERTY_POD > Logs`. Alternatively you could also use the CLI command `oc logs YOUR_LIBERTY_POD`  (https://docs.openshift.com/enterprise/3.1/cli_reference/basic_cli_operations.html#troubleshooting-and-debugging-cli-operations).
+
+![21. View application logs](./doc/21_show_liberty_logs.png)
+
+5. How can I connect to the container instance that is running my application?
+----------------------------------------------------------------
+You can open a terminal connection to the container via the OpenShift Enterprise console: `Browse > Pods > YOUR_LIBERTY_POD > Terminal`. Alternatively you could also use the CLI command `oc rsh YOUR_LIBERTY_POD` (https://docs.openshift.com/enterprise/3.1/cli_reference/basic_cli_operations.html#troubleshooting-and-debugging-cli-operations).
+
+![22. Connecting to the container](./doc/22_show_liberty_terminal.png)
+
 D. Reference Information
 ========================
 
@@ -99,3 +121,7 @@ WebSphere specific
 OpenShift specific
 ------------------
 * Red Hat OpenShift Enterprise documentation -  https://docs.openshift.com/enterprise/3.1/welcome/index.html
+
+E. Credits
+==========
+Special thanks to Chris Eberle <ceberle@redhat.com>

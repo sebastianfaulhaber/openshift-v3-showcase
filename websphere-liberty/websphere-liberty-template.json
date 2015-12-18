@@ -85,6 +85,18 @@
           "triggers": [
             {
               "type": "ConfigChange"
+            },
+            {
+              "type": "Generic",
+              "generic": {
+                "secret": "secret101"
+              }
+            },
+            {
+              "type": "GitHub",
+              "github": {
+                "secret": "secret101"
+              }
             }
           ]
     		  }
