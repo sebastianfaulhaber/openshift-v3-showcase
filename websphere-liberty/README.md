@@ -29,6 +29,8 @@ Screenshots
 
 ![6. IBM WebSphere Liberty startup screen](./doc/06_liberty_splashscreen.png)
 
+![9. Demo application running](./doc/09_demo_application.png)
+
 B. Installation
 ===============
 
@@ -71,7 +73,21 @@ oc create -f websphere-liberty-template.json -n openshift
 ---------------------------------------
 TBD - Show how to automate the build&deploy lifecycle via webhooks
 
-C. Reference Information
+C. User guide
+========================
+
+1. How can I access the provided demo application?
+--------------------------------------------------
+This project provides a simple Java EE web application that can be used to verify that the showcase is working. It can be accessed after provisioning via:  `<YOUR_FQDN>/Sample1/SimpleServlet` (e.g. http://liberty-app-http-route-demo.apps.example.com/Sample1/SimpleServlet).
+
+2. How can I use this showcase in my own OpenShift installation?
+----------------------------------------------------------------
+1. Create a fork of the repository in your own GIT environment
+2. Add your applications to the `app/` folder. They will be picked up and get deployed automatically.
+3. Specify the URL to the forked project as `SOURCE_REPOSITORY_URL` when creating a new application.
+4. Done.
+
+D. Reference Information
 ========================
 
 WebSphere specific

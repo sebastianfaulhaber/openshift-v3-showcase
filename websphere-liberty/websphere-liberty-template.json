@@ -42,11 +42,6 @@
             "value": "websphere-liberty"
         },
         {
-            "description": "Relative Path within Git project that points to the application binary to be deployed (e.g. app/Sample1.war).",
-            "name": "BINARY_DEPLOYMENT_ARTIFACT_PATH",
-            "value": "app/Sample1.war"
-        },
-        {
             "description": "It is necessary to accept the terms of the WebSphere Application Server for Developers and IBM JRE licenses. This is achieved by specifying the environment variable LICENSE equal to accept when running an image. You can also view the license terms by setting this variable to view. Failure to set the variable will result in the termination of the container with a usage statement.",
             "name": "LICENSE",
             "value": "accept",
