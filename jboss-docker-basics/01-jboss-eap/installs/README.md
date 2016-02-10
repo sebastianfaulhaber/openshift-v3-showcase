@@ -1,0 +1,1 @@
+Download the JBoss Enterprise Application Platform (EAP) distribution (`jboss-eap-6.4.0.zip`) from Red Hat Customer Portal (https://access.redhat.com/jbossnetwork/restricted/softwareDetail.html?softwareId=37393&product=appplatform&version=6.4&downloadType=distributions) and place it into this folder.
