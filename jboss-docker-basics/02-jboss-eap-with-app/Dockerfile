@@ -5,4 +5,4 @@ FROM sfaulhab/jboss-eap-6.4
 MAINTAINER "Sebastian Faulhaber" "sebastian.faulhaber@redhat.com"
 
 ### Add application to JBoss EAP
-COPY app/jboss-as-helloworld.war $JBOSS_HOME/standalone/deployments/
+COPY app/ticket-monster.war $JBOSS_HOME/standalone/deployments/

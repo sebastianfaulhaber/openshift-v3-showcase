@@ -1,3 +1,6 @@
+# 0. Docker installation
+Install Docker according to the official documentation that can be found here: https://docs.docker.com/engine/installation/
+
 # 1. Docker basics
 ```
 # Run DOCKER hello-world container
@@ -29,7 +32,7 @@ docker build --rm -t sfaulhab/jboss-eap-6.4 01-jboss-eap
 docker images
 
 # Run the container
-docker run -d -P sfaulhab/jboss-eap-6.4
+docker run -d -p 19990:9990 -P sfaulhab/jboss-eap-6.4
 
 # Show information about running container (get external port)
 docker ps | grep sfaulhab
@@ -37,7 +40,7 @@ docker ps | grep sfaulhab
 # Connect into running container
 docker exec -ti <container-id> /bin/bash
 
-# Open browser and login to JBoss EAP console
+# Open browser and login to JBoss EAP console at http://localhost:19990/
 
 # Stop container
 docker stop <container-id>
@@ -57,13 +60,12 @@ docker build --rm -t sfaulhab/jboss-eap-helloworld 02-jboss-eap-with-app
 docker images
 
 # Run the container
-docker run -d -P sfaulhab/jboss-eap-helloworld
+docker run -d -p 18080:8080 -P sfaulhab/jboss-eap-helloworld
 
 # Show information about running container (get external port)
 docker ps | grep sfaulhab
 
-# Open browser and login to JBoss EAP console: http://localhost:32785/jboss-as-helloworld/
-
+# Open browser and show Ticket Monster application at http://localhost:18080/ticket-monster/
 
 # Stop container
 docker stop <container-id>
