@@ -24,6 +24,7 @@ cat /etc/*-release
 
 ```
 # Walk through Dockerfile
+vi ./01-jboss-eap/Dockerfile
 
 # Build the image
 docker build --rm -t sfaulhab/jboss-eap-6.4 01-jboss-eap
@@ -52,6 +53,7 @@ docker stop <container-id>
 
 ```
 # Walk through Dockerfile
+vi ./02-jboss-eap-with-app/Dockerfile
 
 # Build the image
 docker build --rm -t sfaulhab/jboss-eap-helloworld 02-jboss-eap-with-app
