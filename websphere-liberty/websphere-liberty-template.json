@@ -49,6 +49,73 @@
         }
     ],
     "objects": [
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                  {
+                      "type": "ImageChange",
+                      "imageChangeParams": {
+                        "automatic": true,
+                        "containerNames": [
+                          "${APPLICATION_NAME}"
+                        ],
+                        "from": {
+                          "kind": "ImageStreamTag",
+                          "name": "${APPLICATION_NAME}:latest"
+                        }
+                      }
+                  }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${APPLICATION_NAME}",
+                                "ports": [
+                                    {
+                                        "containerPort": 9080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 9443,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "LICENSE",
+                                        "value": "${LICENSE}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
       {
   			"kind": "BuildConfig",
   			"apiVersion": "v1",
@@ -152,6 +219,9 @@
                 "host": "${APPLICATION_HOSTNAME}",
                 "to": {
                     "name": "${APPLICATION_NAME}"
+                },
+                "port": {
+                    "targetPort": "9080-tcp"
                 }
             }
         },
@@ -162,73 +232,6 @@
                 "name": "${APPLICATION_NAME}",
                 "labels": {
                     "application": "${APPLICATION_NAME}"
-                }
-            }
-        },
-        {
-            "kind": "DeploymentConfig",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "${APPLICATION_NAME}",
-                "labels": {
-                    "application": "${APPLICATION_NAME}"
-                }
-            },
-            "spec": {
-                "strategy": {
-                    "type": "Recreate"
-                },
-                "triggers": [
-                  {
-                      "type": "ImageChange",
-                      "imageChangeParams": {
-                        "automatic": true,
-                        "containerNames": [
-                          "${APPLICATION_NAME}"
-                        ],
-                        "from": {
-                          "kind": "ImageStreamTag",
-                          "name": "${APPLICATION_NAME}:latest"
-                        }
-                      }
-                  }
-                ],
-                "replicas": 1,
-                "selector": {
-                    "deploymentConfig": "${APPLICATION_NAME}"
-                },
-                "template": {
-                    "metadata": {
-                        "name": "${APPLICATION_NAME}",
-                        "labels": {
-                            "deploymentConfig": "${APPLICATION_NAME}",
-                            "application": "${APPLICATION_NAME}"
-                        }
-                    },
-                    "spec": {
-                        "containers": [
-                            {
-                                "name": "${APPLICATION_NAME}",
-                                "image": "${APPLICATION_NAME}",
-                                "ports": [
-                                    {
-                                        "containerPort": 9080,
-                                        "protocol": "TCP"
-                                    },
-                                    {
-                                        "containerPort": 9443,
-                                        "protocol": "TCP"
-                                    }
-                                ],
-                                "env": [
-                                    {
-                                        "name": "LICENSE",
-                                        "value": "${LICENSE}"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
                 }
             }
         }
