@@ -228,11 +228,14 @@
             "spec": {
                 "host": "${APPLICATION_HOSTNAME}",
                 "to": {
-                    "name": "${APPLICATION_NAME}"
+                    "kind": "Service",
+                    "name": "${APPLICATION_NAME}",
+                    "weight": 100
                 },
                 "port": {
                     "targetPort": "9080-tcp"
-                }
+                },
+                "wildcardPolicy": "None"
             }
         }
     ]
