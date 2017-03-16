@@ -27,7 +27,7 @@
         {
             "description": "URL to the source code repository hosting your WebSphere Liberty application (e.g. https://github.com/sebastianfaulhaber/openshift-v3-showcase.git)",
             "name": "SOURCE_REPOSITORY_URL",
-            "value": "https://github.com/sebastianfaulhaber/openshift-v3-showcase.git",
+            "value": "https://github.com/mglantz/openshift-v3-showcase.git",
             "required": true
         },
         {
@@ -49,6 +49,83 @@
         }
     ],
     "objects": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate"
+                },
+                "triggers": [
+                  {
+                      "type": "ImageChange",
+                      "imageChangeParams": {
+                        "automatic": true,
+                        "containerNames": [
+                          "${APPLICATION_NAME}"
+                        ],
+                        "from": {
+                          "kind": "ImageStreamTag",
+                          "name": "${APPLICATION_NAME}:latest"
+                        }
+                      }
+                  }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${APPLICATION_NAME}",
+                                "ports": [
+                                    {
+                                        "containerPort": 9080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "containerPort": 9443,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "LICENSE",
+                                        "value": "${LICENSE}"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
+        },
       {
   			"kind": "BuildConfig",
   			"apiVersion": "v1",
@@ -71,7 +148,7 @@
               "env": [
                 {
                   "name": "HTTP_PROXY",
-                  "value": "http://myproxy.net:5187/"
+                  "value": ""
                 }
               ]
     			  }
@@ -151,85 +228,14 @@
             "spec": {
                 "host": "${APPLICATION_HOSTNAME}",
                 "to": {
-                    "name": "${APPLICATION_NAME}"
-                }
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "${APPLICATION_NAME}",
-                "labels": {
-                    "application": "${APPLICATION_NAME}"
-                }
-            }
-        },
-        {
-            "kind": "DeploymentConfig",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "${APPLICATION_NAME}",
-                "labels": {
-                    "application": "${APPLICATION_NAME}"
-                }
-            },
-            "spec": {
-                "strategy": {
-                    "type": "Recreate"
+                    "kind": "Service",
+                    "name": "${APPLICATION_NAME}",
+                    "weight": 100
                 },
-                "triggers": [
-                  {
-                      "type": "ImageChange",
-                      "imageChangeParams": {
-                        "automatic": true,
-                        "containerNames": [
-                          "${APPLICATION_NAME}"
-                        ],
-                        "from": {
-                          "kind": "ImageStreamTag",
-                          "name": "${APPLICATION_NAME}:latest"
-                        }
-                      }
-                  }
-                ],
-                "replicas": 1,
-                "selector": {
-                    "deploymentConfig": "${APPLICATION_NAME}"
+                "port": {
+                    "targetPort": "9080-tcp"
                 },
-                "template": {
-                    "metadata": {
-                        "name": "${APPLICATION_NAME}",
-                        "labels": {
-                            "deploymentConfig": "${APPLICATION_NAME}",
-                            "application": "${APPLICATION_NAME}"
-                        }
-                    },
-                    "spec": {
-                        "containers": [
-                            {
-                                "name": "${APPLICATION_NAME}",
-                                "image": "${APPLICATION_NAME}",
-                                "ports": [
-                                    {
-                                        "containerPort": 9080,
-                                        "protocol": "TCP"
-                                    },
-                                    {
-                                        "containerPort": 9443,
-                                        "protocol": "TCP"
-                                    }
-                                ],
-                                "env": [
-                                    {
-                                        "name": "LICENSE",
-                                        "value": "${LICENSE}"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                }
+                "wildcardPolicy": "None"
             }
         }
     ]
