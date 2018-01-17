@@ -73,3 +73,18 @@ docker ps | grep sfaulhab
 docker stop <container-id>
 
 ```
+
+# 4. Run JBoss Enterprise Application Platform (EAP) incl. custom application on OpenShift Container Platform
+
+Create a new project and select "Red Hat JBoss EAP 7.0 (no https)" as your S2I template. In the following screen specify the following settings:
+
+```
+Git Repository URL: https://github.com/sebastianfaulhaber/openshift-v3-showcase.git
+Git Reference: <leave empty>
+Context Dir: jboss-docker-basics/03-jboss-eap-on-openshift
+```
+
+Examine the OpenShift build log and wait for the according Pod come up.
+
+Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/ticket-monster/
+
