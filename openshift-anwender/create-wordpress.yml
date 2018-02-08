@@ -1,0 +1,38 @@
+---
+- name: create new wordpress instance
+  hosts: localhost
+  vars:
+    ocp_project_name: "ocp-anwender-community"
+    ocp_project_display_name: "OpenShift Anwender Community"
+    ocp_project_description: "Website and resources for the German OpenShift users community (http://www.openshift-anwender.de/)."
+    ocp_app_name: "openshift-anwender"
+    wp_blog_title: "OpenShift Anwender Community"
+    wp_admin_user: "sebastian.faulhaber"
+    wp_admin_email: "sebastian.faulhaber@redhat.com"
+  tasks:
+    - block:
+      - name: delete project
+        shell: 'oc delete project {{ ocp_project_name }}'
+        ignore_errors: true
+      - name: wait for project deletion
+        wait_for: timeout=30
+    - block: 
+      - name: create project
+        shell: 'oc new-project {{ ocp_project_name }} --display-name="{{ ocp_project_display_name }}" --description="{{ ocp_project_description }}"'
+      - name: create wordpress template from github
+        shell: 'oc create -f https://raw.githubusercontent.com/sebastianfaulhaber/wordpress-quickstart/master/templates/classic-standalone.json'      
+      - name: create wordpress instance from template
+        shell: 'oc new-app --template=wordpress-classic-standalone -p APPLICATION_NAME="{{ ocp_app_name }}" -p QUICKSTART_REPOSITORY_URL="https://github.com/sebastianfaulhaber/wordpress-quickstart/"'
+      - name: get temporary hostname from route
+        shell: 'oc get route openshift-anwender --template={% raw %}{{.spec.host}}{% endraw %}'
+        register: ocp_app_temp_hostname
+      - name: set temporary password from dc
+        shell: 'oc get deploymentconfig openshift-anwender --template={% raw %}{{.metadata.uid}}{% endraw %}'
+        register: wp_admin_password
+      - name: wait for pod to come up
+        wait_for: timeout=120
+      - name: finish wordpress installation wizard
+        shell: 'curl "http://{{ ocp_app_temp_hostname.stdout }}/wp-admin/install.php?step=2" --data-urlencode "weblog_title={{ wp_blog_title }}" --data-urlencode "user_name={{ wp_admin_user }}" --data-urlencode "admin_email={{ wp_admin_email }}" --data-urlencode "admin_password={{ wp_admin_password.stdout }}" --data-urlencode "admin_password2={{ wp_admin_password.stdout }}" --data-urlencode "pw_weak=1"'
+      - name: print wordpress login information
+        debug:
+          msg: 'Wordpress Login information: {{ wp_admin_user }} // {{ wp_admin_password.stdout }}'
