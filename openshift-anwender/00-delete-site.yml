@@ -1,0 +1,10 @@
+---
+- name: delete target site instance
+  hosts: localhost
+  vars:
+    ocp_project_name: "ocp-anwender-community"
+  tasks:
+    - block:
+      - name: delete project
+        shell: 'oc delete project {{ ocp_project_name }}'
+        ignore_errors: true
