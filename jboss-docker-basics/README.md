@@ -96,9 +96,29 @@ Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/t
 This example uses the official JBoss EAP Docker image (built and managed by Red Hat) which is provided through the Red Hat Container catalog (https://access.redhat.com/containers/).
 
 ```
-# Import the image into your OpenShift project
+# [OPTIONAL] Import the image into your OpenShift project (only needed if you have not imported the Red Hat xPaaS Image Streams)
 oc import-image my-jboss-eap-7/jboss-eap71-openshift --from=registry.access.redhat.com/jboss-eap-7/eap71-openshift --confirm
 
 # Create application
 oc new-app https://github.com/sebastianfaulhaber/openshift-v3-showcase.git --context-dir=jboss-docker-basics/04-jboss-eap-from-container-catalog-on-openshift --strategy=docker --name=jboss-eap -l type=appserver
+``` 
+
+Examine the OpenShift build log and wait for the according Pod come up. Then create a route for the generated service by clicking on "Create Route" in the project overview. Accept all the defaults.
+
+Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/ticket-monster/
+
+## 3. Run Apache httpd on OpenShift Container Platform with Docker build strategy
+
+This example uses the official Apache httpd Docker image (built and managed by Red Hat) which is provided through the Red Hat Container catalog (https://access.redhat.com/containers/).
+
 ```
+# [OPTIONAL] Import the image into your OpenShift project (only needed if you have not imported the Red Hat xPaaS Image Streams)
+oc import-image my-rhscl/httpd-24-rhel7 --from=registry.access.redhat.com/rhscl/httpd-24-rhel7 --confirm
+
+# Create application
+oc new-app https://github.com/sebastianfaulhaber/openshift-v3-showcase.git --context-dir=jboss-docker-basics/05-httpd-from-container-catalog-on-openshift --strategy=docker --name=httpd -l type=webserver
+``` 
+
+Examine the OpenShift build log and wait for the according Pod come up. Then create a route for the generated service by clicking on "Create Route" in the project overview. Accept all the defaults.
+
+Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/

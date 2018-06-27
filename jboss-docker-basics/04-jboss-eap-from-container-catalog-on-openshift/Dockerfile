@@ -1,4 +1,4 @@
-### Use the official base image from Red Hat Container Catalog
+### Use the official base image from Red Hat Container Catalog (https://access.redhat.com/containers/)
 FROM registry.access.redhat.com/jboss-eap-7/eap71-openshift
 
 ### File Author / Maintainer
