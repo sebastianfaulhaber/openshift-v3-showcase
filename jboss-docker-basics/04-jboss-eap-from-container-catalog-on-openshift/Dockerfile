@@ -5,4 +5,4 @@ FROM registry.access.redhat.com/jboss-eap-7/eap71-openshift
 LABEL maintainer="sebastian.faulhaber@redhat.com"
 
 ### Add application to JBoss EAP
-COPY app/ticket-monster.war $JBOSS_HOME/standalone/deployments/
+COPY deployments/ticket-monster.war $JBOSS_HOME/standalone/deployments/

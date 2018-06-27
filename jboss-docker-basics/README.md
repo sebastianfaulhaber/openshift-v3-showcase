@@ -100,5 +100,5 @@ This example uses the official JBoss EAP Docker image (built and managed by Red 
 oc import-image my-jboss-eap-7/jboss-eap71-openshift --from=registry.access.redhat.com/jboss-eap-7/eap71-openshift --confirm
 
 # Create application
-oc new-app https://github.com/sebastianfaulhaber/openshift-v3-showcase.git --context-dir=jboss-docker-basics/04-jboss-eap-from-container-catalog-on-openshift --strategy=docker
+oc new-app https://github.com/sebastianfaulhaber/openshift-v3-showcase.git --context-dir=jboss-docker-basics/04-jboss-eap-from-container-catalog-on-openshift --strategy=docker --name=jboss-eap -l type=appserver
 ```
