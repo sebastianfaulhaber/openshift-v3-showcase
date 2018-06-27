@@ -17,7 +17,7 @@ items:
     output:
       to:
         kind: ImageStreamTag
-        name: jboss-eap:latest
+        name: my-jboss-eap:latest
     postCommit: {}
     resources: {}
     runPolicy: Serial
@@ -51,7 +51,7 @@ items:
   metadata:
     creationTimestamp: null
     generation: 1
-    name: jboss-eap
+    name: my-jboss-eap
   spec:
     lookupPolicy:
       local: false

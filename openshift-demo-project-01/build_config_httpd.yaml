@@ -17,7 +17,7 @@ items:
     output:
       to:
         kind: ImageStreamTag
-        name: httpd:latest
+        name: my-httpd:latest
     postCommit: {}
     resources: {}
     runPolicy: Serial
@@ -51,7 +51,7 @@ items:
   metadata:
     creationTimestamp: null
     generation: 1
-    name: httpd
+    name: my-httpd
   spec:
     lookupPolicy:
       local: false

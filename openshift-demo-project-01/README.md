@@ -1,7 +1,6 @@
 
 # Setup Project
 ```
-oc delete project demo-project-01
 oc new-project demo-project-01
 ```
 
@@ -16,3 +15,7 @@ oc create -f build_config_httpd.yaml && oc create -f build_config_jboss-eap.yaml
 oc create -f deployment_config_app_latest.yaml
 ```
 
+# Cleanup project
+```
+oc delete project demo-project-01
+```
