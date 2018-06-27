@@ -96,8 +96,8 @@ Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/t
 This example uses the official JBoss EAP Docker image (built and managed by Red Hat) which is provided through the Red Hat Container catalog (https://access.redhat.com/containers/).
 
 ```
-# Import the image into your OpenShift installation
-oc import-image jboss-eap-7/eap71-openshift --from=registry.access.redhat.com/jboss-eap-7/eap71-openshift --confirm
+# Import the image into your OpenShift project
+oc import-image my-jboss-eap-7/jboss-eap71-openshift --from=registry.access.redhat.com/jboss-eap-7/eap71-openshift --confirm
 
 # Create application
 oc new-app https://github.com/sebastianfaulhaber/openshift-v3-showcase.git --context-dir=jboss-docker-basics/04-jboss-eap-from-container-catalog-on-openshift --strategy=docker
