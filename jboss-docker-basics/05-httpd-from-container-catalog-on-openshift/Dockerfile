@@ -5,4 +5,4 @@ FROM registry.access.redhat.com/rhscl/httpd-24-rhel7
 LABEL maintainer="sebastian.faulhaber@redhat.com"
 
 ### Customize Apache HTTPD according to your needs
-
+COPY config/httpd.conf /etc/httpd/conf/httpd.conf

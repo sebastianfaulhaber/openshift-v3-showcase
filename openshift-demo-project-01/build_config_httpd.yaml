@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: httpd
+      type: webserver
+    name: httpd
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: httpd:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: jboss-docker-basics/05-httpd-from-container-catalog-on-openshift
+      git:
+        uri: https://github.com/sebastianfaulhaber/openshift-v3-showcase.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: httpd:latest
+          namespace: openshift
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: 5a6IF7yXbS9t4b271NPo
+      type: GitHub
+    - generic:
+        secret: ZCrPSdMSNy9vDUnkze5o
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: httpd
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""

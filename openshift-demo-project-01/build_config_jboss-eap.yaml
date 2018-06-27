@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: List
+metadata: {}
+items:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: jboss-eap
+      type: appserver
+    name: jboss-eap
+  spec:
+    failedBuildsHistoryLimit: 5
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: jboss-eap:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: jboss-docker-basics/04-jboss-eap-from-container-catalog-on-openshift
+      git:
+        uri: https://github.com/sebastianfaulhaber/openshift-v3-showcase.git
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: jboss-eap71-openshift:1.1
+          namespace: openshift
+      type: Docker
+    successfulBuildsHistoryLimit: 5
+    triggers:
+    - github:
+        secret: c10HBe43V8rrkLZ4msol
+      type: GitHub
+    - generic:
+        secret: 1zQRuCa5cNjvCXJZIUCb
+      type: Generic
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    generation: 1
+    name: jboss-eap
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
