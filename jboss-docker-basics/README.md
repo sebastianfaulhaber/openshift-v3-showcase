@@ -1,7 +1,9 @@
-# 0. Docker installation
+# Plain Docker examples
+
+## 0. Docker installation
 Install Docker according to the official documentation that can be found here: https://docs.docker.com/engine/installation/
 
-# 1. Docker basics
+## 1. Docker basics
 ```
 # Run DOCKER hello-world container
 # 1. Explain pull mechanism
@@ -20,7 +22,7 @@ docker run -it ubuntu bash
 cat /etc/*-release
 ```
 
-# 2. Run JBoss Enterprise Application Platform (EAP) within a Docker container
+## 2. Run JBoss Enterprise Application Platform (EAP) within a Docker container
 
 ```
 # Walk through Dockerfile
@@ -48,8 +50,7 @@ docker stop <container-id>
 
 ```
 
-
-# 3. Run JBoss Enterprise Application Platform (EAP) incl. custom application
+## 3. Run JBoss Enterprise Application Platform (EAP) incl. custom application
 
 ```
 # Walk through Dockerfile
@@ -74,7 +75,9 @@ docker stop <container-id>
 
 ```
 
-# 4. Run JBoss Enterprise Application Platform (EAP) incl. custom application on OpenShift Container Platform
+# Red Hat OpenShift Container Platform examples
+
+## 1. Run JBoss Enterprise Application Platform (EAP) incl. custom application on OpenShift Container Platform with S2I build strategy
 
 Create a new project and select "Red Hat JBoss EAP 7.0 (no https)" as your S2I template. In the following screen specify the following settings:
 
@@ -87,4 +90,8 @@ Context Dir: jboss-docker-basics/03-jboss-eap-on-openshift
 Examine the OpenShift build log and wait for the according Pod come up.
 
 Open browser and show Ticket Monster Application at http://YOUR_OPENSHIFT_HOST/ticket-monster/
+
+## 2. Run JBoss Enterprise Application Platform (EAP) incl. custom application on OpenShift Container Platform with Docker build strategy
+
+This example uses the official JBoss EAP Docker image (built and managed by Red Hat) which is provided through the Red Hat Container catalog (https://access.redhat.com/containers/).
 
