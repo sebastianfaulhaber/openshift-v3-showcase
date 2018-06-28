@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: my-app-template
+  annotations:
+    description: "Template for provisioning a specific version of 'my-app'."
+    iconClass: "icon-eap"
+    tags: "customapp"
+parameters:
+- name: VERSION_TAG
+  description: "The Image Stream version tag that shall be provisioned (e.g. 'v1' or 'latest')."
+  value: latest
+labels:
+  template: my-app-template
+  app-name: my-app
+  app-version: ${VERSION_TAG}
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+    name: my-app-${VERSION_TAG}
+  spec:
+    ports:
+    - name: 9080-tcp
+      port: 9080
+      protocol: TCP
+      targetPort: 9080
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8778-tcp
+      port: 8778
+      protocol: TCP
+      targetPort: 8778
+    selector:
+      deploymentconfig: my-app-${VERSION_TAG}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    generation: 1
+    labels:
+    name: my-app-${VERSION_TAG}
+  spec:
+    replicas: 1
+    selector:
+      app: my-app-${VERSION_TAG}
+      deploymentconfig: my-app-${VERSION_TAG}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        annotations:
+        creationTimestamp: null
+        labels:
+          app: my-app-${VERSION_TAG}
+          deploymentconfig: my-app-${VERSION_TAG}
+      spec:
+        containers:
+        - name: httpd
+          image: my-httpd:${VERSION_TAG}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 9080
+            protocol: TCP
+          env:
+          - name: env01
+            value: test value
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - name: jboss-eap
+          image: my-jboss-eap:${VERSION_TAG}
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+          env:
+          - name: env01
+            value: test value
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - httpd
+        from:
+          kind: ImageStreamTag
+          name: my-httpd:${VERSION_TAG}
+      type: ImageChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - jboss-eap
+        from:
+          kind: ImageStreamTag
+          name: my-jboss-eap:${VERSION_TAG}
+      type: ImageChange
+    - type: ConfigChange
+
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+    name: my-app-${VERSION_TAG}
+  spec:
+    host: null
+    port:
+      targetPort: 9080-tcp
+    to:
+      kind: Service
+      name: my-app-${VERSION_TAG}
+      weight: 100
+    wildcardPolicy: None
